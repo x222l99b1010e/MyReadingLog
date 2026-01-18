@@ -6,15 +6,21 @@ namespace MyReadingLog.Data
 {
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext(options)
     {
-
+		// 將 Table 註冊進來!!!!!!!!!!!!!!!
+		public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 		public DbSet<Book> Books { get; set; }
+		public DbSet<BookTag> BookTags { get; set; }
 		public DbSet<Category> Categories { get; set; }
+		public DbSet<Review> Reviews { get; set; }
 		public DbSet<Status> Statuses { get; set; }
+		public DbSet<Tag> Tags { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			base.OnModelCreating(modelBuilder); // Identity 必須保留這行
-												// Fluent API 配置（如果需要的話）
+			// 必須保留 base，否則 Identity 的設定會消失// Identity 必須保留這行
+			base.OnModelCreating(modelBuilder); 
+
+			// Fluent API 配置（如果需要的話）
 			// 1. 設定 ISBN 為唯一索引 (Unique Index)
 			modelBuilder.Entity<Book>()
 				.HasIndex(b => b.ISBN)
@@ -32,6 +38,17 @@ namespace MyReadingLog.Data
 				.WithMany(c => c.Books)
 				.HasForeignKey(b => b.CategoryId)
 				.OnDelete(DeleteBehavior.Restrict); // 防止刪除分類時連帶刪除書籍;
+
+			// 1. 設定 BookTag 的複合主鍵
+			// 複合主鍵 //如字面意思  有key=> bookid and tagid
+			modelBuilder.Entity<BookTag>()
+				.HasKey(bt => new { bt.BookId, bt.TagId });
+
+			// 2. 設定 Review 的複合唯一索引 (一人一書一評)
+			// 如字面意思  有Index=> bookid and applicationuserid 而且是唯一
+			modelBuilder.Entity<Review>()
+				.HasIndex(r => new { r.BookId, r.ApplicationUserId })
+				.IsUnique();
 		}
 	}
     
