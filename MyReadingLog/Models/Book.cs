@@ -1,14 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyReadingLog.Models
 {
 	public class Book
 	{
 		public int BookId { get; set; }
-		
+		[Required(ErrorMessage = "書名是必填的")] // 前端驗證：必填
+		[StringLength(100)] // 資料庫：nvarchar(100) / 前端驗證：長度限制
 		public string Title { get; set; }
 		public string Author { get; set; }
 		public string Description { get; set; }
+		[MaxLength(13)] // 資料庫：nvarchar(20)
 		public string ISBN { get; set; }
 		//外鍵欄位
 		public int CategoryId { get; set; }
@@ -29,6 +32,14 @@ namespace MyReadingLog.Models
 
 		// 記得補上 Review 的集合，這才是一對多的完整體
 		public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
-		public virtual ICollection<BookTag> BookTag { get; set; }
+		public virtual ICollection<BookTag> BookTags { get; set; }
+		//在有 ICollection 的類別裡初始化集合，防止 NullReferenceException
+		public Book()
+		{
+			Reviews = new HashSet<Review>(); // 使用 HashSet 效能較好且不重複
+			BookTags = new HashSet<BookTag>();
+			CreatedDate = DateTime.Now;
+			RevisedDate = DateTime.Now;
+		}
 	}
 }
