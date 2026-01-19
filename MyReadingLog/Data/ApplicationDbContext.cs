@@ -12,7 +12,7 @@ namespace MyReadingLog.Data
 		public DbSet<BookTag> BookTags { get; set; }
 		public DbSet<Category> Categories { get; set; }
 		public DbSet<Review> Reviews { get; set; }
-		public DbSet<Status> Statuses { get; set; }
+		public DbSet<BookStatus> Statuses { get; set; }
 		public DbSet<Tag> Tags { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -43,11 +43,12 @@ namespace MyReadingLog.Data
 				.HasForeignKey(b => b.CategoryId)
 				.OnDelete(DeleteBehavior.Restrict); // 防止刪除分類時連帶刪除書籍;
 			modelBuilder.Entity<Book>()
-				.HasOne(b => b.RevisorId)
+				.HasOne(b => b.Revisor) // 這裡放 ApplicationUser 類型的 Revisor
 				.WithMany()// 使用者可以修改很多本書
-				.HasForeignKey(b => b.Revisor)
-				.OnDelete(DeleteBehavior.Restrict); // 防止刪除使用者時連帶刪除書籍;
-													//「如果你想刪除這個使用者，但這本書還掛在他名下，不准刪！」
+				.HasForeignKey(b => b.RevisorId)  // 這裡放 string 類型的 RevisorId
+				.OnDelete(DeleteBehavior.SetNull); //1.SetNull 會員刪帳號後，書評還在，但「作者」欄位變 Null。
+												   //2.Restrict 會員想刪帳號時，系統噴錯：「你還有書評，不准刪！」
+												   //3.Cascade 會員一刪帳號，他寫過的 100 篇書評全部消失。
 			// 1. 設定 BookTag 的複合主鍵
 			// 複合主鍵 //如字面意思  有key=> bookid and tagid
 			modelBuilder.Entity<BookTag>()

@@ -15,13 +15,17 @@ namespace MyReadingLog.Models
 		public DateTime CreatedDate { get; set; }
 		public DateTime RevisedDate { get; set; }
 		// 外鍵
+		public int ReviewStatusId { get; set; }
 		public int BookId { get; set; }
 		// 4. [必填標籤]
-		[Required]
-		public string ApplicationUserId { get; set; }
+		// --- 關鍵部分 ---
+		// 4-1. 外鍵屬性：加上 ? 代表資料庫欄位為 NULL，且刪除時不會連動刪除
+		
+		public string? ApplicationUserId { get; set; }
 		// 導覽屬性
 		// 5. 加上 virtual 關鍵字
-		public virtual ApplicationUser ApplicationUser { get; set; }
+		// 4-2. 導覽屬性：同樣加上 ?，代表這筆評論「不一定」要有一個關聯的使用者
+		public virtual ApplicationUser? ApplicationUser { get; set; }
 		public virtual Book Book { get; set; }
 		// 6. 建立一個建構函數，把時間初始化為 DateTime.Now
 		public Review()
