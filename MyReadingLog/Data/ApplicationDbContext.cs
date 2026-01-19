@@ -36,6 +36,9 @@ namespace MyReadingLog.Data
 			modelBuilder.Entity<Book>()
 				.Property(b => b.CreatedDate)
 				.HasDefaultValueSql("SYSDATETIME()");
+			modelBuilder.Entity<Book>()
+				.Property(b => b.RevisedDate)
+				.HasDefaultValueSql("SYSDATETIME()");
 			// 4. 如果想手動指定外鍵關係（通常 EF 會自動判斷，但手寫更精確）
 			modelBuilder.Entity<Book>()
 				.HasOne(b => b.Category)
@@ -53,7 +56,6 @@ namespace MyReadingLog.Data
 			// 複合主鍵 //如字面意思  有key=> bookid and tagid
 			modelBuilder.Entity<BookTag>()
 				.HasKey(bt => new { bt.BookId, bt.TagId });
-
 			modelBuilder.Entity<Tag>()
 				.HasIndex(t => t.TagName)
 				.IsUnique();// 標籤名稱通常也是唯一的

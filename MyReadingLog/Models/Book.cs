@@ -28,6 +28,9 @@ namespace MyReadingLog.Models
 		//導覽屬性 (Navigation Properties)
 		public virtual Category Category { get; set; }
 		public virtual BookStatus Status { get; set; }
+		// 這裡最關鍵：指名這個 Creator 物件要對應到 CreatorId
+		[ForeignKey("CreatorId")]
+		public virtual ApplicationUser Creator { get; set; }
 		// 這裡最關鍵：指名這個 Revisor 物件要對應到 RevisorId
 		[ForeignKey("RevisorId")]
 		public virtual ApplicationUser? Revisor { get; set; }
@@ -40,8 +43,6 @@ namespace MyReadingLog.Models
 		{
 			Reviews = new HashSet<Review>(); // 使用 HashSet 效能較好且不重複
 			BookTags = new HashSet<BookTag>();
-			CreatedDate = DateTime.Now;
-			RevisedDate = DateTime.Now;
 		}
 	}
 }
