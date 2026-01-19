@@ -22,8 +22,6 @@ namespace MyReadingLog.Models
 
 		public ApplicationUser()
 		{
-			CreatedDate = DateTime.Now;
-			RevisedDate = DateTime.Now;
 			Reviews = new List<Review>();
 		}
 	}

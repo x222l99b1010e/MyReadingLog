@@ -6,11 +6,13 @@ namespace MyReadingLog.Models
 	public class Book
 	{
 		public int BookId { get; set; }
-		[Required(ErrorMessage = "書名是必填的")] // 前端驗證：必填
+		[Required(ErrorMessage = "書名為必填")] // 前端驗證：必填
 		[StringLength(100)] // 資料庫：nvarchar(100) / 前端驗證：長度限制
 		public string Title { get; set; }
+		[Required(ErrorMessage = "作者為必填")]
+		[StringLength(100)] // 資料庫：nvarchar(50) / 前端驗證：長度限制
 		public string Author { get; set; }
-		[MaxLength(400)]
+		[MaxLength(500)]
 		public string Description { get; set; }
 		[MaxLength(20)] // 資料庫：nvarchar(20)
 		public string ISBN { get; set; }
