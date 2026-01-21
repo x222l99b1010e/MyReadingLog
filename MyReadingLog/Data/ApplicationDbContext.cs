@@ -22,11 +22,17 @@ namespace MyReadingLog.Data
 		{
 			// 必須保留 base，否則 Identity 的設定會消失// Identity 必須保留這行
 			base.OnModelCreating(modelBuilder);
+			//篩選出沒軟刪除的帳號
+			modelBuilder.Entity<ApplicationUser>()
+				.HasQueryFilter(u => !u.IsDeleted);
 
 			modelBuilder.Entity<Book>()
 				.Property(b => b.Title)
 				.HasMaxLength(100)
 				.IsRequired();
+			modelBuilder.Entity<Book>()//新增Id起始點
+				.Property(b => b.BookId)
+				.UseIdentityColumn(10000, 1);
 			// Fluent API 配置（如果需要的話）
 			// 1. 設定 ISBN 為唯一索引 (Unique Index)
 			modelBuilder.Entity<Book>()

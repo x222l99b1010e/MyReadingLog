@@ -17,25 +17,29 @@ namespace MyReadingLog.Models
 		[MaxLength(20)] // 資料庫：nvarchar(20)
 		public string ISBN { get; set; }
 		//外鍵欄位
-		public int CategoryId { get; set; }
-		public int BookStatusId { get; set; }
+		public int? CategoryId { get; set; }
+		public int? BookStatusId { get; set; }
 		public string CreatorId { get; set; }
 		public string? RevisorId { get; set; }
 
 		//審計欄位
-		public DateTime PublishedDate { get; set; }
+		public DateTime? PublishedDate { get; set; }
 		public DateTime CreatedDate { get; set; }
 		public DateTime RevisedDate { get; set; }
+		public string? Note { get; set; }
 
 		//導覽屬性 (Navigation Properties)
+		[ForeignKey("CategoryId")]
 		public virtual Category Category { get; set; }
 		[ForeignKey("BookStatusId")]
 		public virtual BookStatus BookStatus { get; set; }
 		// 這裡最關鍵：指名這個 Creator 物件要對應到 CreatorId
 		[ForeignKey("CreatorId")]
+		[MaxLength(450)]
 		public virtual ApplicationUser Creator { get; set; }
 		// 這裡最關鍵：指名這個 Revisor 物件要對應到 RevisorId
 		[ForeignKey("RevisorId")]
+		[MaxLength(450)]
 		public virtual ApplicationUser? Revisor { get; set; }
 
 		// 記得補上 Review 的集合，這才是一對多的完整體
