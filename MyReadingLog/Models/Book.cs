@@ -18,7 +18,7 @@ namespace MyReadingLog.Models
 		public string ISBN { get; set; }
 		//外鍵欄位
 		public int CategoryId { get; set; }
-		public int StatusId { get; set; }
+		public int BookStatusId { get; set; }
 		public string CreatorId { get; set; }
 		public string? RevisorId { get; set; }
 
@@ -29,7 +29,8 @@ namespace MyReadingLog.Models
 
 		//導覽屬性 (Navigation Properties)
 		public virtual Category Category { get; set; }
-		public virtual BookStatus Status { get; set; }
+		[ForeignKey("BookStatusId")]
+		public virtual BookStatus BookStatus { get; set; }
 		// 這裡最關鍵：指名這個 Creator 物件要對應到 CreatorId
 		[ForeignKey("CreatorId")]
 		public virtual ApplicationUser Creator { get; set; }

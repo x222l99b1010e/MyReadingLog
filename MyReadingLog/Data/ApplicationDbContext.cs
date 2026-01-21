@@ -78,6 +78,17 @@ namespace MyReadingLog.Data
 				.OnDelete(DeleteBehavior.SetNull); //1.SetNull 會員刪帳號後，書評還在，但「作者」欄位變 Null。 (人走了，書還在但修改者變空)
 												   //2.Restrict 會員想刪帳號時，系統噴錯：「你還有書評，不准刪！」
 												   //3.Cascade 會員一刪帳號，他寫過的 100 篇書評全部消失。
+			// --- Book 與 BookStatus 的關係 ---
+			// BookStatus 沒有對應的 ICollection<Book> 屬性
+			// 所以用 .WithMany() 而不是 .WithMany(bs => bs.Books)
+			// 未來如果要擴充狀態管理，防止刪除狀態時連帶刪除書籍，因此使用 Restrict
+			// 目前基本上無意義
+			modelBuilder.Entity<Book>()
+				.HasOne(b => b.BookStatus) // Book 有一個狀態
+				.WithMany() // 狀態對應多本書，但 BookStatus 類別裡沒有集合屬性
+				.HasForeignKey(b => b.BookStatusId)
+				.OnDelete(DeleteBehavior.Restrict); // 未來如果要擴充狀態管理，防止刪除狀態時連帶刪除書籍;
+
 			modelBuilder.Entity<Review>()
 				.HasOne(r => r.ApplicationUser)
 				.WithMany(u => u.Reviews)
@@ -91,6 +102,7 @@ namespace MyReadingLog.Data
 				.HasIndex(t => t.TagName)
 				.IsUnique();// 標籤名稱通常也是唯一的
 
+			
 			// 2. 設定 Review 的複合唯一索引 (一人一書一評)
 			// 如字面意思  有Index=> bookid and applicationuserid 而且是唯一
 			modelBuilder.Entity<Review>()
